@@ -15,9 +15,9 @@ class CommandLineLoader(ConfigLoader):
                             help='脚本实际运行的概率，默认为100', required=False, dest='chance')
         args = parser.parse_args()
         config = GymConfig(args.username, args.password)
-        if args.sckey:
+        if args.sckey is not None:
             config.notify_enabled = True
             config.sckey = args.sckey
-        if args.chance:
+        if args.chance is not None:
             config.chance = args.chance
         return config
