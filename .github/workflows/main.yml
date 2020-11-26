@@ -1,0 +1,24 @@
+name: Deploy On the server
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
+
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Pull the source code
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  password: ${{ secrets.PASSWD }}
+                  port: 22
+                  envs: 
+                  script: |
+                      cd /root/gym/bupt-gym-reserve
+                      git pull
