@@ -128,18 +128,21 @@ class Reserver:
         for li in lis:
             body = li.select_one('.collapsible-body')
             date = body['id']
-            year = int(date[0:4])
-            mon = int(date[4:6])
-            day = int(date[6:len(date)])
+            try:
+                year = int(date[0:4])
+                mon = int(date[4:6])
+                day = int(date[6:len(date)])
+            except ValueError:
+                raise PageFormatException(msg=f'无法正确从文本 "{date}" 中获取预约日期')
             for i, time in enumerate(body.select('.timeBox')):
                 right_text = time.select_one('.rightBox').get_text().strip()
                 has_reserved = '已预约' in right_text
-                match_regex = r'\d+'
-                match_result = re.findall(match_regex, right_text)
-                if len(match_result) < 2:
-                    raise PageFormatException(msg='页面格式出现错误')
-                reserved = match_result[0]
-                total = match_result[1]
+                # 寻找文本中出现的所有数字
+                reserve_match = re.findall(r'\d+', right_text)
+                if len(reserve_match) < 2:
+                    raise PageFormatException(msg=f'无法正确从文本 "{right_text}" 中获取预约人数')
+                reserved = reserve_match[0]
+                total = reserve_match[1]
                 reservation_list.append(Reserve(year, mon, day, i + 1, total, reserved, has_reserved))
         return reservation_list
 
@@ -215,7 +218,7 @@ if __name__ == '__main__':
     print('怎么又要干活o(￣ヘ￣o＃)' if roll_result else '好耶，是摸鱼时间！(๑•̀ㅂ•́)و✧')
     if not roll_result:
         sys.exit()
-    
+
     notifier = SeverChanNotifier(sckey=config.sckey)
     session = GymSession(config=config)
     reserver = Reserver(config=config, session=session)
@@ -240,7 +243,7 @@ if __name__ == '__main__':
             for fail in fail_list:
                 content += f'{str(fail[0])}+  失败原因：{fail[1]}\n'
             if not notifier.send_msg(title, content):
-                print('推送消息至微信失败')
+                sys.stderr.write('推送消息至微信失败\n')
     else:
         print('无可用时段，退出中...')
     session.save()
