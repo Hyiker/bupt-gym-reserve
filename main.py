@@ -1,14 +1,16 @@
-from os import stat_result
 from config_loader.base import GymConfig
 import requests
-import argparse
 import json
+import re
+import sys
 from bs4 import BeautifulSoup
 import execjs
 import time as timelib
 import config_loader
 from config_loader import *
+from exception import PageFormatException
 from notifier import SeverChanNotifier
+
 req_config = {
     'headers': {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
@@ -22,6 +24,7 @@ req_config = {
         'order': 'https://gym.byr.moe/newOrder.php'
     }
 }
+
 error_reason = {
     '1': '预约成功',
     '2': '非法请求！',
@@ -30,6 +33,7 @@ error_reason = {
     '5': '参数错误!请勿作死!',
     '6': '近两周内有不良预约记录!请反省'
 }
+
 period_list = ('', '18:40 - 19:40', '19:40 - 20:40', '20:40 - 21:40')
 
 
@@ -130,8 +134,12 @@ class Reserver:
             for i, time in enumerate(body.select('.timeBox')):
                 right_text = time.select_one('.rightBox').get_text().strip()
                 has_reserved = '已预约' in right_text
-                total = int(right_text[3:5])
-                reserved = int(right_text[0:2])
+                match_regex = r'\d+'
+                match_result = re.findall(match_regex, right_text)
+                if len(match_result) < 2:
+                    raise PageFormatException(msg='页面格式出现错误')
+                reserved = match_result[0]
+                total = match_result[1]
                 reservation_list.append(Reserve(year, mon, day, i + 1, total, reserved, has_reserved))
         return reservation_list
 
@@ -206,18 +214,24 @@ if __name__ == '__main__':
     roll_result = roll_the_dice(config.chance)
     print('怎么又要干活o(￣ヘ￣o＃)' if roll_result else '好耶，是摸鱼时间！(๑•̀ㅂ•́)و✧')
     if not roll_result:
-        import sys
         sys.exit()
-
+    
+    notifier = SeverChanNotifier(sckey=config.sckey)
     session = GymSession(config=config)
     reserver = Reserver(config=config, session=session)
-    reserves = reserver.get_reserves()
+    reserves = list()
+    try:
+        reserves = reserver.get_reserves()
+    except PageFormatException as e:
+        sys.stderr.write(f'捕获到错误：{e.msg}\n')
+        notifier.send_msg('预约出现错误', f'捕获到错误：{e.msg}')
+        sys.exit()
+
     reservable = [_reserve for _reserve in reserves if _reserve.reservable]
     print(f'当前可预约有{len(reservable)} / {len(reserves)}个')
     if len(reservable) > 0:
         success_list, fail_list = reserver.reserve_all(reservable)
         if config.notify_enabled:
-            notifier = SeverChanNotifier(sckey=config.sckey)
             title = f'成功预约{len(success_list)}个健身房时段，失败{len(fail_list)}个'
             content = '以下时段预约成功：\n'
             for suc in success_list:
