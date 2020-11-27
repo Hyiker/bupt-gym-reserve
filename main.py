@@ -1,4 +1,3 @@
-from config_loader.base import GymConfig
 import requests
 import json
 import re
@@ -6,10 +5,7 @@ import sys
 from bs4 import BeautifulSoup
 import execjs
 import time as timelib
-import config_loader
-from config_loader import *
-from exception import PageFormatException
-from notifier import SeverChanNotifier
+from bupt_gym_reserve import *
 
 req_config = {
     'headers': {
@@ -211,8 +207,19 @@ if __name__ == '__main__':
     print('********** {} **********'.format(
         timelib.strftime('%Y-%m-%d %H:%M:%S', timelib.localtime(timelib.time())))
     )
-    config_loader = CommandLineLoader()
-    config = config_loader.load_config()
+    command_line_loader = CommandLineLoader()
+    config = command_line_loader.load_config()
+
+    json_loader = JsonLoader(config_path=config.config_path)
+    if not json_loader.load_status:
+        json_config = None
+        try:
+            json_loader.load_config()
+        except ConfigException as ce:
+            sys.stderr.write(f'读取json配置文件出现错误：{ce}\n')
+            sys.exit()
+        merge_configs([config, json_config])
+
     print('正在摇D100... _(:з」∠)_')
     roll_result = roll_the_dice(config.chance)
     print('怎么又要干活o(￣ヘ￣o＃)' if roll_result else '好耶，是摸鱼时间！(๑•̀ㅂ•́)و✧')
@@ -247,4 +254,6 @@ if __name__ == '__main__':
     else:
         print('无可用时段，退出中...')
     session.save()
-    config.save()
+    if json_loader.load_status:
+        config.save()
+        pass

@@ -1,6 +1,8 @@
 __all__ = (
     'GymConfig',
-    'ConfigLoader'
+    'ConfigLoader',
+    'merge_configs',
+    'create_config_from_json',
 )
 
 
@@ -13,7 +15,7 @@ class GymConfig(dict):
         super().__setattr__(name, value)
         self[name] = value
 
-    def __init__(self, username: str, password: str, notify_enabled: bool = False, sckey: str = '', chance: int = 100) -> None:
+    def __init__(self, username: str = None, password: str = None, notify_enabled: bool = False, sckey: str = '', chance: int = 100) -> None:
         super(GymConfig, self).__init__()
         self.username = username
         self.password = password
@@ -30,6 +32,13 @@ class GymConfig(dict):
         '''
         with open(self.config_path, 'w+') as foo:
             json.dump(self, foo)
+        print('正在保存配置文件...')
+
+
+def create_config_from_json(json_dict: dict) -> GymConfig:
+    config = GymConfig()
+    for key in json_dict:
+        setattr(config, key, json_dict[key])
 
 
 def merge_configs(configs: list) -> GymConfig:
