@@ -97,6 +97,9 @@ class GymSession(requests.Session):
 
     # 返回登录成功状态
     def login(self, username: str, password: str) -> bool:
+        if not username or not password:
+            sys.stderr.write('用户名以及密码不能为空\n')
+            sys.exit()
         payload = {
             'username': username,
             'password': password,
