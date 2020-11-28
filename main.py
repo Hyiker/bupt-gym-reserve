@@ -29,7 +29,8 @@ error_reason = {
     '3': '本时间段人数已满!',
     '4': '您已预约本时段健身房!',
     '5': '参数错误!请勿作死!',
-    '6': '近两周内有不良预约记录!请反省'
+    '6': '近两周内有不良预约记录!请反省',
+    'dont spam': '服务器将访问识别为垃圾信息'
 }
 
 period_list = ('', '18:40 - 19:40', '19:40 - 20:40', '20:40 - 21:40')
@@ -177,8 +178,8 @@ class Reserver:
                 success_list.append(r)
             else:
                 fail_list.append((r, error_reason[suc]))
-            # 休眠一秒，以防服务器认定为trash
-            timelib.sleep(1)
+            # 休眠1.5秒，以防服务器认定为trash
+            timelib.sleep(1.5)
 
         return (success_list, fail_list)
 
