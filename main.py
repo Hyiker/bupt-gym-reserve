@@ -5,7 +5,9 @@ import sys
 from bs4 import BeautifulSoup
 import execjs
 import time as timelib
-from bupt_gym_reserve import *
+from bupt_gym_reserve import GymConfig, PageFormatException, CommandLineLoader, JsonLoader, SeverChanNotifier, ConfigException, merge_configs
+from Crypto.Cipher import AES
+import base64
 
 req_config = {
     'headers': {
@@ -156,7 +158,7 @@ class Reserver:
         elif status in error_reason:
             print(f'预约失败！失败理由：{error_reason[status]}')
         else:
-            print('服务器异常！')
+            print(f'服务器异常，返回code：{status}')
         return status.rstrip()
 
     def reserve_all(self, reserve_list: list) -> tuple:
@@ -169,11 +171,12 @@ class Reserver:
                 success_list.append(r)
             else:
                 fail_list.append((r, error_reason[suc]))
+            # 休眠一秒，以防服务器认定为trash
+            timelib.sleep(1)
+
         return (success_list, fail_list)
 
     def _get_blob(self, year: int, mon: int, day: int, period: int, time: int):
-        from Crypto.Cipher import AES
-        import base64
         raw = execjs.eval('''JSON.stringify(
                     {{
                         date: '{}',
@@ -244,6 +247,11 @@ if __name__ == '__main__':
     print(f'当前可预约有{len(reservable)} / {len(reserves)}个')
     if len(reservable) > 0:
         success_list, fail_list = reserver.reserve_all(reservable)
+        if len(fail_list) != 0:
+            print(f'失败{len(fail_list)}个，正在尝试重新预约')
+            sl, fl = reserver.reserve_all(fail_list)
+            success_list += sl
+            fail_list = fl
         if config.notify_enabled:
             title = f'成功预约{len(success_list)}个健身房时段，失败{len(fail_list)}个'
             content = '以下时段预约成功：\n'
