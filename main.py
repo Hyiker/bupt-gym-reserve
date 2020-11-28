@@ -63,6 +63,7 @@ class GymSession(requests.Session):
         self.cookie_path = config.cookie_path
         self.headers.update(req_config['headers'])
         self._recover_or_create_session()
+        self.index_cache = None
 
     def save(self):
         print('正在保存session...')
@@ -76,6 +77,8 @@ class GymSession(requests.Session):
         if (self._login_attemption == 0 and not self._login_flag) or force_request:
             response_text = self.get(req_config['urls']['index']).text
             self._login_flag = '点击下方可用时间段进行预订' in response_text
+            if self._login_flag:
+                self.index_cache = response_text
         return self._login_flag
 
     def _recover_or_create_session(self):
@@ -121,9 +124,12 @@ class Reserver:
         self.config = config
         self.session = session
 
-    def get_reserves(self) -> list:
+    def get_reserves(self, index_cache: str = None) -> list:
         reservation_list = list()
-        index_page = self.session.get(req_config['urls']['index']).text
+        if index_cache is None:
+            index_page = self.session.get(req_config['urls']['index']).text
+        else:
+            index_page = index_cache
         index_soup = BeautifulSoup(index_page, 'html.parser')
         lis = index_soup.select('.collapsible.popout>li')
         for li in lis:
@@ -237,7 +243,7 @@ if __name__ == '__main__':
     reserver = Reserver(config=config, session=session)
     reserves = list()
     try:
-        reserves = reserver.get_reserves()
+        reserves = reserver.get_reserves(index_cache=session.index_cache)
     except PageFormatException as e:
         sys.stderr.write(f'捕获到错误：{e.msg}\n')
         notifier.send_msg('预约出现错误', f'捕获到错误：{e.msg}')
