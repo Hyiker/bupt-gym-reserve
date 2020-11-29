@@ -256,7 +256,10 @@ if __name__ == '__main__':
         success_list, fail_list = reserver.reserve_all(reservable)
         if len(fail_list) != 0:
             print(f'失败{len(fail_list)}个，正在尝试重新预约')
-            sl, fl = reserver.reserve_all(fail_list)
+            new_fail_list = list()
+            for _reserve, _reason in fail_list:
+                new_fail_list.append(_reserve)
+            sl, fl = reserver.reserve_all(new_fail_list)
             success_list += sl
             fail_list = fl
         if config.notify_enabled:
