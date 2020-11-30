@@ -12,8 +12,8 @@ jobs:
             - name: pull
               uses: garygrossgarten/github-action-ssh@release
               with:
-                  command: git -C /root/gym/bupt-gym-reserve pull
-                  host: ${{ secrets.REMOTE_HOST }}
+                  command: ${{ secrets.COMMAND1 }}
+                  host: ${{ secrets.HOST1 }}
                   username: ${{ secrets.USERNAME }}
-                  password: ${{ secrets.PASSWD }}
-                  port: ${{ secrets.PORT }}
+                  privateKey: ${{ secrets.PRIVATE_KEY1 }}
+                  port: ${{ secrets.PORT1 }}
