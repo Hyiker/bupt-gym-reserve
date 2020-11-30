@@ -12,7 +12,8 @@ jobs:
             - name: pull
               uses: garygrossgarten/github-action-ssh@release
               with:
-                  command: echo "test" >> /root/test.log && git -C /root/gym/bupt-gym-reserve pull
+                  command: git -C /root/gym/bupt-gym-reserve pull
                   host: ${{ secrets.REMOTE_HOST }}
                   username: ${{ secrets.USERNAME }}
                   passphrase: ${{ secrets.PASSWD }}
+                  port: ${{ secrets.PORT }}
