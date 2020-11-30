@@ -6,7 +6,7 @@ on:
         branches: [master]
     workflow_dispatch:
 jobs:
-    deploy:
+    deploy1:
         runs-on: ubuntu-latest
         steps:
             - name: pull
@@ -17,3 +17,14 @@ jobs:
                   username: ${{ secrets.USERNAME1 }}
                   privateKey: ${{ secrets.PRIVATE_KEY1 }}
                   port: ${{ secrets.PORT1 }}
+    deploy2:
+        runs-on: ubuntu-latest
+        steps:
+            - name: pull
+              uses: garygrossgarten/github-action-ssh@release
+              with:
+                  command: ${{ secrets.COMMAND2 }}
+                  host: ${{ secrets.HOST1 }}
+                  username: ${{ secrets.USERNAME1 }}
+                  privateKey: ${{ secrets.PRIVATE_KEY2 }}
+                  port: ${{ secrets.PORT2 }}
