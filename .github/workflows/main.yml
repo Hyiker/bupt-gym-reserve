@@ -15,5 +15,5 @@ jobs:
                   command: ${{ secrets.COMMAND1 }}
                   host: ${{ secrets.HOST1 }}
                   username: ${{ secrets.USERNAME1 }}
-                  password: ${{ secrets.PRIVATE_KEY1 }}
+                  privateKey: ${{ secrets.PRIVATE_KEY1 }}
                   port: ${{ secrets.PORT1 }}
