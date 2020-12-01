@@ -177,7 +177,7 @@ class Reserver:
             if suc == '1':
                 success_list.append(r)
             else:
-                fail_list.append((r, error_reason[suc]))
+                fail_list.append((r, error_reason[suc] if suc in error_reason else '未知错误'))
             # 休眠1.5秒，以防服务器认定为trash
             timelib.sleep(1.5)
 
@@ -257,21 +257,21 @@ if __name__ == '__main__':
         if len(fail_list) != 0:
             print(f'失败{len(fail_list)}个，正在尝试重新预约')
             new_fail_list = list()
-            for _reserve, _reason in fail_list:
+            for _reserve, _ in fail_list:
                 new_fail_list.append(_reserve)
             sl, fl = reserver.reserve_all(new_fail_list)
             success_list += sl
             fail_list = fl
         if config.notify_enabled:
             title = f'成功预约{len(success_list)}个健身房时段，失败{len(fail_list)}个'
-            content = '以下时段预约成功：\n'
+            content = '以下时段预约成功：'
             for suc in success_list:
-                content += str(suc)+'\n'
-            content += '以下时段预约失败：\n'
-            for fail in fail_list:
-                content += f'{str(fail[0])}+  失败原因：{fail[1]}\n'
+                content += str(suc) + '   '
+            content += '以下时段预约失败：'
+            for failure, reason in fail_list:
+                content += f'{str(failure)}+  失败原因：{reason}'
             if not notifier.send_msg(title, content):
-                sys.stderr.write('推送消息至微信失败\n')
+                sys.stderr.write('推送消息至微信失败')
     else:
         print('无可用时段，退出中...')
     session.save()
