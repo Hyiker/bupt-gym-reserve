@@ -4,7 +4,7 @@ chardet==3.0.4
 idna==2.10
 pycryptodome==3.9.9
 PyExecJS==1.5.1
-requests==2.25.0
+requests==2.25.1
 six==1.15.0
 soupsieve==2.2
 urllib3==1.26.2
