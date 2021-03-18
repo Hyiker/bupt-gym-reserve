@@ -2,7 +2,7 @@ beautifulsoup4==4.9.3
 certifi==2020.11.8
 chardet==3.0.4
 idna==2.10
-pycryptodome==3.9.9
+pycryptodome==3.10.1
 PyExecJS==1.5.1
 requests==2.25.0
 six==1.15.0
