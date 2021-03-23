@@ -4,17 +4,18 @@
 
 ## 依赖
 
--   Python 3.8.5 （开发环境）
--   requests：发送 HTTP 请求
--   BeautifulSoup4：解析 html 页面
--   ExecJs：用于执行页面上的 JavaScript 脚本
--   PyCryptoDome：AES 加密
+- Python 3.8.5 （开发环境）
+- requests：发送 HTTP 请求
+- BeautifulSoup4：解析 html 页面
+- ExecJs：用于执行页面上的 JavaScript 脚本
+- PyCryptoDome：AES 加密
+- NodeJs：提供JS运行时
 
 ## 特性
 
--   高可用性，在大部分环境下均可部署使用
--   高可拓展性，方便二次开发
--   (可选) 使用 Server 酱进行消息推送
+- 高可用性，在大部分环境下均可部署使用
+- 高可拓展性，方便二次开发
+- (可选) 使用 Server 酱进行消息推送
 
 ## 更新日志 Changelog
 
