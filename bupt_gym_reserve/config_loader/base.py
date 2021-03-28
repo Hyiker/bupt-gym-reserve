@@ -16,9 +16,10 @@ class GymConfig(dict):
     username: str = None
     password: str = None
     notify_enabled: bool = False
-    sckey: str = '',
+    sckey: str = ''
     chance: int = 100
     dumpconf: bool = False
+    blacklist: str = None
     cookie_path: str = './cookie.json'
     config_path: str = './config.json'
 

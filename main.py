@@ -1,9 +1,10 @@
 from typing import Tuple
-from bupt_gym_reserve.config_loader.base import GymConfig
+import re
 import time as timelib
 import sys
 from bupt_gym_reserve import PageFormatException, CommandLineLoader, \
-    JsonLoader, SeverChanNotifier, ConfigException, merge_configs, GymSession, Reserver
+    JsonLoader, SeverChanNotifier, ConfigException, merge_configs, GymSession, Reserver, \
+    RegexException
 
 
 def roll_the_dice(chance: int) -> bool:
@@ -56,13 +57,17 @@ if __name__ == '__main__':
     reservable = [_reserve for _reserve in reserves if _reserve.reservable]
     print(f'当前可预约有{len(reservable)} / {len(reserves)}个')
     if len(reservable) > 0:
-        success_list, fail_list = reserver.reserve_all(reservable)
+        try:
+            blacklist_pattern = re.compile(config.blacklist)
+        except re.error:
+            raise RegexException('无法识别的正则表达式')
+        success_list, fail_list = reserver.reserve_all(reservable, blacklist_pattern)
         if len(fail_list) != 0:
             print(f'失败{len(fail_list)}个，正在尝试重新预约')
             new_fail_list = list()
             for _reserve, _ in fail_list:
                 new_fail_list.append(_reserve)
-            sl, fl = reserver.reserve_all(new_fail_list)
+            sl, fl = reserver.reserve_all(new_fail_list, blacklist_pattern)
             success_list += sl
             fail_list = fl
         if config.notify_enabled:
