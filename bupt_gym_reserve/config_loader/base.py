@@ -18,6 +18,7 @@ class GymConfig(dict):
     notify_enabled: bool = False
     sckey: str = '',
     chance: int = 100
+    dumpconf: bool = False
     cookie_path: str = './cookie.json'
     config_path: str = './config.json'
 

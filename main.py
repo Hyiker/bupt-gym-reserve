@@ -78,6 +78,6 @@ if __name__ == '__main__':
     else:
         print('无可用时段，退出中...')
     session.save()
-    if json_loader.load_status:
+    if config.dumpconf and json_loader.load_status:
         config.save()
         pass

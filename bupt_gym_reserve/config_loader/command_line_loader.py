@@ -15,6 +15,8 @@ class CommandLineLoader(ConfigLoader):
                             help='脚本实际运行的概率，默认为100', required=False, dest='chance')
         parser.add_argument('--config', '-f', type=int,
                             help='配置文件的路径，默认为"./config.json"', required=False, dest='config_path')
+        parser.add_argument('--dumpconf', '-d', type=bool,
+                            help='是否保存配置文件，默认为否', required=False, dest='dumpconf')
         args = parser.parse_args()
         config = GymConfig(args.username, args.password)
         if args.sckey is not None:
@@ -24,4 +26,6 @@ class CommandLineLoader(ConfigLoader):
             config.chance = args.chance
         if args.config_path is not None:
             config.config_path = args.config_path
+        if args.dumpconf is not None:
+            config.dumpconf = args.dumpconf
         return config
