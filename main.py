@@ -1,3 +1,5 @@
+from typing import Tuple
+from bupt_gym_reserve.config_loader.base import GymConfig
 import time as timelib
 import sys
 from bupt_gym_reserve import PageFormatException, CommandLineLoader, \
@@ -13,10 +15,7 @@ def roll_the_dice(chance: int) -> bool:
     return chance >= res
 
 
-if __name__ == '__main__':
-    print('********** {} **********'.format(
-        timelib.strftime('%Y-%m-%d %H:%M:%S', timelib.localtime(timelib.time())))
-    )
+def load_config() -> Tuple:
     command_line_loader = CommandLineLoader()
     config = command_line_loader.load_config()
 
@@ -29,7 +28,14 @@ if __name__ == '__main__':
             sys.stderr.write(f'读取json配置文件出现错误：{ce}\n')
             sys.exit()
         merge_configs([config, json_config])
+    return (json_loader, config)
 
+
+if __name__ == '__main__':
+    print('********** {} **********'.format(
+        timelib.strftime('%Y-%m-%d %H:%M:%S', timelib.localtime(timelib.time())))
+    )
+    (json_loader, config) = load_config()
     print('正在摇D100... _(:з」∠)_')
     roll_result = roll_the_dice(config.chance)
     print('怎么又要干活o(￣ヘ￣o＃)' if roll_result else '好耶，是摸鱼时间！(๑•̀ㅂ•́)و✧')
