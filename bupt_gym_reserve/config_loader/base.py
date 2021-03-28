@@ -8,22 +8,22 @@ __all__ = (
 
 from abc import ABCMeta, abstractmethod
 import json
+from dataclasses import dataclass
 
 
+@dataclass
 class GymConfig(dict):
+    username: str = None
+    password: str = None
+    notify_enabled: bool = False
+    sckey: str = '',
+    chance: int = 100
+    cookie_path: str = './cookie.json'
+    config_path: str = './config.json'
+
     def __setattr__(self, name: str, value: any) -> None:
         super().__setattr__(name, value)
         self[name] = value
-
-    def __init__(self, username: str = None, password: str = None, notify_enabled: bool = False, sckey: str = '', chance: int = 100) -> None:
-        super(GymConfig, self).__init__()
-        self.username = username
-        self.password = password
-        self.notify_enabled = notify_enabled
-        self.sckey = sckey
-        self.cookie_path = './cookie.json'
-        self.config_path = './config.json'
-        self.chance = chance
 
     def save(self):
         '''

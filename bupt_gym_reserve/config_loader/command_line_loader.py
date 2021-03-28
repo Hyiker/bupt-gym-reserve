@@ -1,4 +1,4 @@
-from .base import *
+from .base import ConfigLoader, GymConfig
 import argparse
 
 
