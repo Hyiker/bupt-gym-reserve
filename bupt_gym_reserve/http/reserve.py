@@ -27,6 +27,11 @@ class Reserve:
         self.has_reserved = has_reserved
         self.reservable = (reserved < total) and not has_reserved
 
+    # 正则匹配预约时间段
+    # 需要匹配的格式为year/month/day/period(1-3)
+    def match(self, pattern: re.Pattern) -> bool:
+        return pattern.match(f'{self.year}/{self.mon}/{self.day}/{self.period}') is not None
+
     def __str__(self) -> str:
         return f'''时间：{self.year}/{self.mon}/{self.day}\n时段：{period_list[self.period]}'''
 
@@ -79,10 +84,12 @@ class Reserver:
             print(f'服务器异常，返回code：{status}')
         return status.rstrip()
 
-    def reserve_all(self, reserve_list: list) -> tuple:
+    def reserve_all(self, reserve_list: list, blacklist_pattern: re.Pattern = None) -> tuple:
         success_list = list()
         fail_list = list()
         for i, r in enumerate(reserve_list):
+            if blacklist_pattern and r.match(blacklist_pattern):
+                continue
             print(f'正在预约第{i+1}个...')
             suc = self.reserve(r)
             if suc == '1':

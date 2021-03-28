@@ -17,6 +17,8 @@ class CommandLineLoader(ConfigLoader):
                             help='配置文件的路径，默认为"./config.json"', required=False, dest='config_path')
         parser.add_argument('--dumpconf', '-d', type=bool,
                             help='是否保存配置文件，默认为否', required=False, dest='dumpconf')
+        parser.add_argument('--blacklist', '-b', type=str,
+                            help='不需要预约的时段，使用正则匹配，格式如year/mon/day/period', required=False, dest='blacklist')
         args = parser.parse_args()
         config = GymConfig(args.username, args.password)
         if args.sckey is not None:
@@ -28,4 +30,6 @@ class CommandLineLoader(ConfigLoader):
             config.config_path = args.config_path
         if args.dumpconf is not None:
             config.dumpconf = args.dumpconf
+        if args.blacklist is not None:
+            config.blacklist = args.blacklist
         return config
