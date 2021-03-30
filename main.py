@@ -57,11 +57,14 @@ if __name__ == '__main__':
     reservable = [_reserve for _reserve in reserves if _reserve.reservable]
     print(f'当前可预约有{len(reservable)} / {len(reserves)}个')
     if len(reservable) > 0:
-        try:
-            blacklist_pattern = re.compile(config.blacklist)
-        except re.error:
-            raise RegexException('无法识别的正则表达式')
-        success_list, fail_list = reserver.reserve_all(reservable, blacklist_pattern)
+        if config.blacklist:
+            try:
+                blacklist_pattern = re.compile(config.blacklist)
+            except re.error:
+                raise RegexException('无法识别的正则表达式')
+            success_list, fail_list = reserver.reserve_all(reservable, blacklist_pattern)
+        else:
+            success_list, fail_list = reserver.reserve_all(reservable)
         if len(fail_list) != 0:
             print(f'失败{len(fail_list)}个，正在尝试重新预约')
             new_fail_list = list()
