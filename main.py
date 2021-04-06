@@ -73,7 +73,7 @@ if __name__ == '__main__':
             sl, fl = reserver.reserve_all(new_fail_list, blacklist_pattern)
             success_list += sl
             fail_list = fl
-        if config.notify_enabled:
+        if config.notify_enabled and (len(success_list) < 0 or len(fail_list) > 0):
             title = f'成功预约{len(success_list)}个健身房时段，失败{len(fail_list)}个'
             content = '以下时段预约成功：'
             for suc in success_list:
