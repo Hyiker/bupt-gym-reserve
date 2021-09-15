@@ -2,7 +2,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/vscode,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=vscode,python
 
-# macOS Dick File
+# macOS Disk File
 .DS_Store
 ### Python ###
 # Byte-compiled / optimized / DLL files
