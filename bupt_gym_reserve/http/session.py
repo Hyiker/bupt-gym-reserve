@@ -3,6 +3,7 @@ from ..config_loader import GymConfig
 import json
 import sys
 from .magics import req_config
+from bs4 import BeautifulSoup as bs
 __all__ = (
     'GymSession',
 )
@@ -58,16 +59,25 @@ class GymSession(requests.Session):
 
     # 返回登录成功状态
     def login(self, username: str, password: str) -> bool:
+        login_session = self.get(req_config['urls']['index'], headers=req_config['headers'])
+        pre_login_page = bs(login_session.content, "html.parser")
+        lt = pre_login_page.find('input',{'name':'lt'})['value']
+        execution = pre_login_page.find('input', {'name':'execution'})['value']
         if not username or not password:
             sys.stderr.write('用户名以及密码不能为空\n')
             sys.exit()
         payload = {
             'username': username,
             'password': password,
-            'usertype': 0,
-            'action': None
+            'lt': lt,
+            'execution': execution,
+            '_eventId': 'submit',
+            'rmShown' : 1
+            # 'submit': '%E7%99%BB%E5%BD%95'
+            # 'usertype': 0,
+            # 'action': None
         }
-        self.post(req_config['urls']['login'], data=payload)
+        self.post(req_config['urls']['loginT'], data=payload)
         login_res = self.has_login()
         self._login_attemption += 1
         self._login_flag = login_res

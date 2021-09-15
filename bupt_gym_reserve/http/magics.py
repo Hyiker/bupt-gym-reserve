@@ -12,8 +12,11 @@ req_config = {
     },
     'urls': {
         'index': 'https://gym.byr.moe/index.php',
-        'login': 'https://gym.byr.moe/login.php',
-        'order': 'https://gym.byr.moe/newOrder.php'
+        # Original login page outdated
+        # 'login': 'https://gym.byr.moe/login.php',
+        'order': 'https://gym.byr.moe/newOrder.php',
+        # Updated new login site Sep15
+        'loginT': 'https://auth.bupt.edu.cn/authserver/login?service=https%3A%2F%2Fgym.byr.moe%2Fcaslogin.php%3FredirectUrl%3Dhttps%253A%252F%252Fgym.byr.moe%252Findex.php'
     }
 }
 
