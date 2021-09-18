@@ -16,8 +16,6 @@ class JsonLoader(ConfigLoader):
         try:
             with open(self.config_path, 'r') as foo:
                 config = create_config_from_json(json.load(foo))
-        except FileNotFoundError:
-            raise ConfigException('JSON配置未找到')
         except JSONDecodeError:
             raise ConfigException('JSON配置格式有误，请仔细阅读说明文档')
         return config

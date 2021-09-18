@@ -1,3 +1,4 @@
+from bupt_gym_reserve.config_loader.base import GymConfig
 from typing import Tuple
 import re
 import time as timelib
@@ -28,7 +29,10 @@ def load_config() -> Tuple:
         except ConfigException as ce:
             sys.stderr.write(f'读取json配置文件出现错误：{ce}\n')
             sys.exit()
-        merge_configs([config, json_config])
+        except FileNotFoundError:
+            json_config = GymConfig()
+            pass
+        config = merge_configs([config, json_config])
     return (json_loader, config)
 
 
