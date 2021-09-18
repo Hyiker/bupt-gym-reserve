@@ -41,6 +41,7 @@ def create_config_from_json(json_dict: dict) -> GymConfig:
     config = GymConfig()
     for key in json_dict:
         setattr(config, key, json_dict[key])
+    return config
 
 
 def merge_configs(configs: list) -> GymConfig:

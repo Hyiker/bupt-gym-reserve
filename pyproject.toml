@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "bupt-gym-reserve"
+version = "1.1.2"
+description = ""
+authors = ["hyiker <hyiker@bupt.edu.cn>"]
+license = "GPLv3"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+beautifulsoup4 = "^4.10.0"
+pycryptodome = "^3.10.1"
+PyExecJS = "^1.5.1"
+requests = "^2.26.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

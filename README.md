@@ -10,6 +10,7 @@
 - ExecJs：用于执行页面上的 JavaScript 脚本
 - PyCryptoDome：AES 加密
 - NodeJs：提供 JS 运行时
+- Poetry：管理项目依赖
 
 ## 特性
 
@@ -27,14 +28,17 @@
 
 **2021/3/28** 添加黑名单功能，现在可以用正则表达式匹配自己不想要的时段啦~
 
+**2021/9/18** 修复json配置文件不生效的问题；使用poetry管理项目依赖
+
 ## 部署
 
 可以使用校内或者校外的服务器进行部署，具体流程：
 
 1. `git clone git@github.com:Hyiker/bupt-gym-reserve.git` 将代码仓库克隆到本地或者下载 zip 包
-2. `cd bupt-gym-reserve && pip3 install -r requirements.txt`
-3. `python3 main.py -u 信息门户用户名 -p 信息门户登录密码 -k server酱的SCKEY`
-4. (可选)将脚本执行命令添加到`crontab`中
+2. `cd bupt-gym-reserve` 进入项目文件夹
+3. `pip install poetry && poetry install` 使用[poetry](https://python-poetry.org/)直接下载项目的所有依赖
+4. `poetry run python main.py -u 信息门户用户名 -p 信息门户登录密码 -k server酱的SCKEY`
+5. (可选)将脚本执行命令添加到`crontab`中
 
 ## 参数说明
 

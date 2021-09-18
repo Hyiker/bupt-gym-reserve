@@ -21,10 +21,10 @@ def load_config() -> Tuple:
     config = command_line_loader.load_config()
 
     json_loader = JsonLoader(config_path=config.config_path)
-    if not json_loader.load_status:
+    if json_loader.load_status:
         json_config = None
         try:
-            json_loader.load_config()
+            json_config = json_loader.load_config()
         except ConfigException as ce:
             sys.stderr.write(f'读取json配置文件出现错误：{ce}\n')
             sys.exit()
